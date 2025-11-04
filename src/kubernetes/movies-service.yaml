@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: movies-service
-        image: ghcr.io/Blyabtroi/architecture-cinemaabyss/movies-service:latest
+        image: ghcr.io/blyabtroi/architecture-cinemaabyss/movies-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
