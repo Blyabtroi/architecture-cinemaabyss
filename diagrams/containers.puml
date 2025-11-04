@@ -1,0 +1,43 @@
+@startuml
+!include <C4/C4_Container>
+!include <C4/C4_Context.puml>
+!include <C4/C4_Container.puml>
+!include <C4/C4_Component.puml>
+!include <C4/C4.puml>
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+' Актор — конечный пользователь
+Person(user, "Пользователь", "Использует мобильное устройство, ноутбук или Smart TV для просмотра контента")
+
+' Граница системы CinemaAbyss
+System_Boundary(cinemaAbyss, "Kinobezdna / CinemaAbyss") {
+
+    ' Proxy-сервис - единственная точка входа (фасад)
+    Container(proxy_service, "Proxy Service (API Gateway)", "Go", "Маршрутизирует запросы между монолитом и микросервисами\nПоддержка постепенной процентной маршрутизации", $tags="proxy")
+
+    ' Монолит с оставшимися функциями
+    Container(monolith, "Monolith", "Go + PostgreSQL", "Управление пользователями, платежами и подписками\nРазвёрнут в Kubernetes", $tags="monolith")
+
+    ' Извлечённый микросервис Movies - метаданные фильмов и рейтинги
+    Container(movies_service, "Movies Service", "Go + PostgreSQL", "Обработка метаданных фильмов, жанров, рейтингов\nРазвёрнут в Kubernetes", $tags="microservice")
+
+    ' Сервис событий для коммуникации через Kafka
+    Container(events_service, "Events Service", "Go + Kafka", "Обработка и публикация событий (фильмы, пользователи, платежи)", $tags="microservice")
+
+    ' Kafka как Event Bus
+    Container(kafka, "Event Bus (Kafka)", "Kafka Cluster", "Обеспечивает асинхронное взаимодействие между сервисами", $tags="infrastructure")
+}
+
+' Пользователь обращается к Proxy API Gateway
+Rel(user, proxy_service, "Использует REST API", "HTTPS")
+
+' Proxy маршрутирует запросы на монолит и микросервисы с поддержкой Strangler Fig
+Rel(proxy_service, monolith, "REST/gRPC вызовы с процентной маршрутизацией")
+Rel(proxy_service, movies_service, "REST/gRPC вызовы с процентной маршрутизацией")
+
+' Микросервисы публикуют и получают события через Kafka
+Rel(monolith, kafka, "Публикует события")
+Rel(movies_service, kafka, "Публикует события")
+Rel(events_service, kafka, "Публикует и потребляет события")
+
+@enduml
