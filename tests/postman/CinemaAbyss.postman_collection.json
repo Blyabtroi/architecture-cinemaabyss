@@ -579,7 +579,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"movie_id\": {{movieId}},\n    \"title\": \"Test Movie Event\",\n    \"action\": \"viewed\",\n    \"user_id\": {{userId}}\n}"
+              "raw": "{\n  \"movie_id\": \"{{movieId}}\",\n  \"title\": \"Test Movie Event\",\n  \"action\": \"viewed\",\n  \"user_id\": \"{{userId}}\"\n}"
+
             }
           },
           "event": [
@@ -618,7 +619,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"user_id\": {{userId}},\n    \"username\": \"testuser\",\n    \"action\": \"logged_in\",\n    \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+              "raw": "{\n  \"user_id\": \"{{userId}}\",\n  \"username\": \"testuser\",\n  \"action\": \"logged_in\",\n  \"timestamp\": \"{{$isoTimestamp}}\"\n}"
+
             }
           },
           "event": [
@@ -657,7 +659,8 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"payment_id\": {{paymentId}},\n    \"user_id\": {{userId}},\n    \"amount\": 9.99,\n    \"status\": \"completed\",\n    \"timestamp\": \"{{$isoTimestamp}}\",\n    \"method_type\": \"credit_card\"\n}"
+              "raw": "{\n  \"payment_id\": \"{{paymentId}}\",\n  \"user_id\": \"{{userId}}\",\n  \"amount\": 9.99,\n  \"status\": \"completed\",\n  \"timestamp\": \"{{$isoTimestamp}}\",\n  \"method_type\": \"credit_card\"\n}"
+                   
             }
           },
           "event": [
