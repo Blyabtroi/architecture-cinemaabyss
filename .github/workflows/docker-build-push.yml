@@ -38,63 +38,52 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      ######## Proxy Service
+      - name: Extract metadata (tags, labels) for Proxy Service
+        id: meta-proxy
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.PROXY_SERVICE_IMAGE_NAME }}
+          tags: |
+            type=sha,format=short
+            latest
 
-      - name: Build and push proxy-service
+      - name: Build and push Proxy Service Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/proxy
           file: ./src/microservices/proxy/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/cinemaabyss-proxy-service:latest
+          tags: ${{ steps.meta-proxy.outputs.tags }}
+          labels: ${{ steps.meta-proxy.outputs.labels }}
 
-      - name: Build and push events-service
+      ######## Events Service
+      - name: Extract metadata (tags, labels) for Events Service
+        id: meta-events
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.EVENTS_SERVICE_IMAGE_NAME }}
+          tags: |
+            type=sha,format=short
+            latest
+
+      - name: Build and push Events Service Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./src/microservices/events
           file: ./src/microservices/events/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/cinemaabyss-events-service:latest
+          tags: ${{ steps.meta-events.outputs.tags }}
+          labels: ${{ steps.meta-events.outputs.labels }}
 
-      - name: Run API tests (Newman/Postman)
-        uses: matt-ball/newman-action@v1
-        with:
-          collection: ./tests/CinemaAbyss.postman_collection.json
-          environment: ./tests/CinemaAbyss.postman_environment.json
-          reporters: cli
-
-
-      - name: Extract metadata (tags, labels) for Monolith
-        id: meta-monolith
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.MONOLITH_IMAGE_NAME }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,format=short
-            type=ref,event=branch
-            latest
-
-      - name: Build and push Monolith Docker image
-        uses: docker/build-push-action@v4
-        with:
-          context: ./src/monolith
-          push: true
-          tags: ${{ steps.meta-monolith.outputs.tags }}
-          labels: ${{ steps.meta-monolith.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
+      ######## Movies Service
       - name: Extract metadata (tags, labels) for Movies Service
         id: meta-movies
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.MOVIES_SERVICE_IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=sha,format=short
-            type=ref,event=branch
             latest
 
       - name: Build and push Movies Service Docker image
@@ -107,4 +96,30 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      
+      ######## Monolith
+      - name: Extract metadata (tags, labels) for Monolith
+        id: meta-monolith
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.MONOLITH_IMAGE_NAME }}
+          tags: |
+            type=sha,format=short
+            latest
+
+      - name: Build and push Monolith Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./src/monolith
+          push: true
+          tags: ${{ steps.meta-monolith.outputs.tags }}
+          labels: ${{ steps.meta-monolith.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      ######## API Tests
+      - name: Run API tests (Newman/Postman)
+        uses: matt-ball/newman-action@v1
+        with:
+          collection: ./tests/CinemaAbyss.postman_collection.json
+          environment: ./tests/CinemaAbyss.postman_environment.json
+          reporters: cli
