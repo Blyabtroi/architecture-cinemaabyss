@@ -120,6 +120,6 @@ jobs:
       - name: Run API tests (Newman/Postman)
         uses: matt-ball/newman-action@master
         with:
-          collection: ./tests/CinemaAbyss.postman_collection.json
-          environment: ./tests/kubernetes.environment.json
+          collection: ./tests/postman/CinemaAbyss.postman_collection.json
+          environment: ./tests/postman/kubernetes.environment.json
           reporters: cli
