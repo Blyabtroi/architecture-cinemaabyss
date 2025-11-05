@@ -118,7 +118,7 @@ jobs:
 
       ######## API Tests
       - name: Run API tests (Newman/Postman)
-        uses: matt-ball/newman-action@main
+        uses: matt-ball/newman-action@master
         with:
           collection: ./tests/CinemaAbyss.postman_collection.json
           environment: ./tests/kubernetes.environment.json
