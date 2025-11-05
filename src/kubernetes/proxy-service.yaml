@@ -57,7 +57,7 @@ spec:
           periodSeconds: 20
       restartPolicy: Always
       imagePullSecrets:
-        - name: dockerconfigjson
+         - name: ghcr-secret
 ---
 apiVersion: v1
 kind: Service
