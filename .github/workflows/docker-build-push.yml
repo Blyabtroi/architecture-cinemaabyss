@@ -121,5 +121,5 @@ jobs:
         uses: matt-ball/newman-action@v1
         with:
           collection: ./tests/CinemaAbyss.postman_collection.json
-          environment: ./tests/CinemaAbyss.postman_environment.json
+          environment: ./tests/kubernetes.environment.json
           reporters: cli
