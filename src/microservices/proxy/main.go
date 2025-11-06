@@ -120,7 +120,11 @@ func handleProxy(w http.ResponseWriter, r *http.Request) {
 
 func proxyRequest(target *url.URL, w http.ResponseWriter, r *http.Request) {
 	proxy := httputil.NewSingleHostReverseProxy(target)
-
+	if r.URL.Path == "/api/proxy/health" {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+		return
+	}
 	log.Printf("Incoming request: %s %s routed to: %s", r.Method, r.URL.Path, target.String())
 
 	proxy.ServeHTTP(w, r)
