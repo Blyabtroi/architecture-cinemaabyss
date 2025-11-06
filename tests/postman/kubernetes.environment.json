@@ -1,49 +1,49 @@
 {
-  "id": "local-env",
-  "name": "Kubernetes Environment",
-  "values": [
-    {
-      "key": "baseUrl",
-      "value": "http://cinemaabyss.example.com",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "moviesServiceUrl",
-      "value": "http://cinemaabyss.example.com",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "eventsServiceUrl",
-      "value": "http://cinemaabyss.example.com",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "proxyServiceUrl",
-      "value": "http://cinemaabyss.example.com",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "userId",
-      "value": "test-user-1",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "movieId",
-      "value": "test-movie-2",
-      "type": "default",
-      "enabled": true
-    },
-    {
-      "key": "paymentId",
-      "value": "test-payment-3",
-      "type": "default",
-      "enabled": true
-    }
-  ],
-  "_postman_variable_scope": "environment"
+    "id": "local-env",
+    "name": "Kubernetes Environment",
+    "values": [
+        {
+            "key": "baseUrl",
+            "value": "http://cinemaabyss.example.com",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "moviesServiceUrl",
+            "value": "http://cinemaabyss.example.com",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "eventsServiceUrl",
+            "value": "http://cinemaabyss.example.com",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "proxyServiceUrl",
+            "value": "http://cinemaabyss.example.com",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "userId",
+            "value": "test-user-1",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "movieId",
+            "value": "test-movie-2",
+            "type": "default",
+            "enabled": true
+        },
+        {
+            "key": "paymentId",
+            "value": "test-payment-3",
+            "type": "default",
+            "enabled": true
+        }
+    ],
+    "_postman_variable_scope": "environment"
 }
