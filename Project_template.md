@@ -251,7 +251,6 @@ cat .docker/config.json | base64
 
   zookeeper-0                       1/1     Running 
 ```
-
 ![alt text](<Screenshot 2025-11-12 at 18.17.45.png>)
 
   8. Добавим ingress
