@@ -63,6 +63,13 @@ func main() {
 		GroupID: "cinemaabyss-events-group",
 	})
 
+	// Проверка подключения к Kafka
+	if err := writer.WriteMessages(context.Background(), kafka.Message{
+		Value: []byte("test"),
+	}); err != nil {
+		log.Fatalf("Failed to connect to Kafka: %v", err)
+	}
+
 	// Запуск горутины для чтения сообщений из Kafka
 	go consumeEvents()
 
