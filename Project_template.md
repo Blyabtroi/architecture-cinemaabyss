@@ -212,6 +212,7 @@ cat .docker/config.json | base64
   kubectl -n cinemaabyss logs имя_пода (например - kafka-0)
   ```
 
+
   5. Разверните монолит:
   ```bash
   kubectl apply -f src/kubernetes/monolith.yaml
@@ -251,6 +252,8 @@ cat .docker/config.json | base64
   zookeeper-0                       1/1     Running 
 ```
 
+![alt text](<Screenshot 2025-11-12 at 18.17.45.png>)
+
   8. Добавим ingress
 
   - добавьте аддон
@@ -280,7 +283,7 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
-
+![alt text](<Screenshot 2025-11-12 at 18.50.27.png>)
 
 # Задание 4
 Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу 
