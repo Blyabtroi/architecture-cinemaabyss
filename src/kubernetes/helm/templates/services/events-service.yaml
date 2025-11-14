@@ -25,7 +25,21 @@ spec:
     spec:
       containers:
       - name: events-service
-       .... тут
+        image: "{{ .Values.eventsService.image.repository }}:{{ .Values.eventsService.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.eventsService.containerPort }}
+        env:
+{{- range .Values.eventsService.env }}
+        - name: {{ .name }}
+          value: {{ .value }}
+{{- end }}
+        resources:
+          requests:
+            memory: {{ .Values.eventsService.resources.requests.memory }}
+            cpu: {{ .Values.eventsService.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.eventsService.resources.limits.memory }}
+            cpu: {{ .Values.eventsService.resources.limits.cpu }}
 ---
 apiVersion: v1
 kind: Service
@@ -37,5 +51,10 @@ metadata:
     app.kubernetes.io/name: {{ include "cinemaabyss.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
- ........ и тут
+  selector:
+    app: events-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.eventsService.servicePort }}
+      targetPort: {{ .Values.eventsService.containerPort }}
 {{- end }}

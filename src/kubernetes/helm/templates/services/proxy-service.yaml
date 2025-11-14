@@ -25,7 +25,21 @@ spec:
     spec:
       containers:
       - name: proxy-service
-        ..... тут
+        image: "{{ .Values.proxyService.image.repository }}:{{ .Values.proxyService.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.proxyService.containerPort }}
+        env:
+{{- range .Values.proxyService.env }}
+        - name: {{ .name }}
+          value: {{ .value }}
+{{- end }}
+        resources:
+          requests:
+            memory: {{ .Values.proxyService.resources.requests.memory }}
+            cpu: {{ .Values.proxyService.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.proxyService.resources.limits.memory }}
+            cpu: {{ .Values.proxyService.resources.limits.cpu }}
 ---
 apiVersion: v1
 kind: Service
@@ -38,5 +52,9 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
   selector:
-    ... и тут
+    app: proxy-service
+  ports:
+    - protocol: TCP
+      port: {{ .Values.proxyService.servicePort }}
+      targetPort: {{ .Values.proxyService.containerPort }}
 {{- end }}

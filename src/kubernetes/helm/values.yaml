@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+    - name: dockerconfigjson
 # Database configuration
 database:
   host: postgres
@@ -53,10 +53,18 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/proxy-service:latest
     tag: latest
     pullPolicy: Always
   replicas: 1
+  image:
+    repository: nginx
+    tag: latest
+  containerPort: 80
+  servicePort: 80
+  env:
+    - name: ENV_VAR
+      value: "production"
   resources:
     limits:
       cpu: 300m
@@ -73,7 +81,7 @@ proxyService:
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/movies-service:latest
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -93,10 +101,18 @@ moviesService:
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/events-service:latest
     tag: latest
     pullPolicy: Always
   replicas: 1
+  image:
+    repository: my-events-image
+    tag: latest
+  containerPort: 8082
+  servicePort: 8082
+  env:
+    - name: ENV_VAR
+      value: "production"
   resources:
     limits:
       cpu: 300m
