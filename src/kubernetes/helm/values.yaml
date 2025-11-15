@@ -53,18 +53,17 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/proxy-service:latest
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
-  image:
-    repository: nginx
-    tag: latest
   containerPort: 80
   servicePort: 80
   env:
     - name: ENV_VAR
       value: "production"
+    - name: MONOLITH_URL
+      value: "http://monolith:8080"
   resources:
     limits:
       cpu: 300m
@@ -77,11 +76,37 @@ proxyService:
     targetPort: 8000
     type: ClusterIP
 
+eventsService:
+  enabled: true
+  image:
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/events-service
+    tag: latest
+    pullPolicy: Always
+  replicas: 1
+  containerPort: 8082
+  servicePort: 8082
+  env:
+    - name: ENV_VAR
+      value: "production"
+    - name: KAFKA_BROKERS
+      value: "kafka:9092"
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 8082
+    targetPort: 8082
+    type: ClusterIP
+
 # Movies service configuration
 moviesService:
   enabled: true
   image:
-    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/movies-service:latest
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/movies-service
     tag: latest
     pullPolicy: Always
   replicas: 1
@@ -95,34 +120,6 @@ moviesService:
   service:
     port: 8081
     targetPort: 8081
-    type: ClusterIP
-
-# Events service configuration
-eventsService:
-  enabled: true
-  image:
-    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/events-service:latest
-    tag: latest
-    pullPolicy: Always
-  replicas: 1
-  image:
-    repository: my-events-image
-    tag: latest
-  containerPort: 8082
-  servicePort: 8082
-  env:
-    - name: ENV_VAR
-      value: "production"
-  resources:
-    limits:
-      cpu: 300m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  service:
-    port: 8082
-    targetPort: 8082
     type: ClusterIP
 
 # Kafka configuration
