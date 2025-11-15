@@ -363,7 +363,11 @@ https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
 
 ![alt text](<Screenshot 2025-11-14 at 16.39.11.png>)
+
 ![alt text](<Screenshot 2025-11-14 at 16.39.52.png>)
+
+![alt text](<Screenshot 2025-11-15 at 11.57.29.png>)
+
 ## Удаляем все
 
 ```bash

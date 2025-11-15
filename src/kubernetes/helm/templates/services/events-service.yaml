@@ -26,12 +26,13 @@ spec:
       containers:
       - name: events-service
         image: "{{ .Values.eventsService.image.repository }}:{{ .Values.eventsService.image.tag }}"
+        imagePullPolicy: {{ .Values.eventsService.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.eventsService.containerPort }}
         env:
 {{- range .Values.eventsService.env }}
         - name: {{ .name }}
-          value: {{ .value }}
+          value: "{{ .value }}"
 {{- end }}
         resources:
           requests:
@@ -54,7 +55,8 @@ spec:
   selector:
     app: events-service
   ports:
-    - protocol: TCP
-      port: {{ .Values.eventsService.servicePort }}
-      targetPort: {{ .Values.eventsService.containerPort }}
+  - protocol: TCP
+    port: {{ .Values.eventsService.servicePort }}
+    targetPort: {{ .Values.eventsService.containerPort }}
+  type: {{ .Values.eventsService.service.type }}
 {{- end }}

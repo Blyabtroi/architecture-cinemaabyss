@@ -26,12 +26,13 @@ spec:
       containers:
       - name: proxy-service
         image: "{{ .Values.proxyService.image.repository }}:{{ .Values.proxyService.image.tag }}"
+        imagePullPolicy: {{ .Values.proxyService.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.proxyService.containerPort }}
         env:
 {{- range .Values.proxyService.env }}
         - name: {{ .name }}
-          value: {{ .value }}
+          value: "{{ .value }}"
 {{- end }}
         resources:
           requests:
@@ -54,7 +55,8 @@ spec:
   selector:
     app: proxy-service
   ports:
-    - protocol: TCP
-      port: {{ .Values.proxyService.servicePort }}
-      targetPort: {{ .Values.proxyService.containerPort }}
+  - protocol: TCP
+    port: {{ .Values.proxyService.servicePort }}
+    targetPort: {{ .Values.proxyService.containerPort }}
+  type: {{ .Values.proxyService.service.type }}
 {{- end }}
