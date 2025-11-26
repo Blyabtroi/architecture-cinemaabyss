@@ -5,7 +5,7 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[ссылка на файл](ссылка)
+[ссылка на файл](diagrams/containers.puml)
 
 # Задание 2
 
@@ -58,6 +58,12 @@
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman 
 Приложите скриншот тестов и скриншот состояния топиков Kafka из UI http://localhost:8090 
+
+![Скриншот состояния топиков](<Screenshot 2025-11-02 at 21.04.27.png>)
+![Скриншот состояния тестов 2](<Screenshot 2025-11-02 at 21.06.00.png>)
+![Скриншот состояния тестов 3](<Screenshot 2025-11-05 at 22.10.21.png>)
+![Скриншот состояния тестов 4](<Screenshot 2025-11-05 at 22.11.15.png>)
+![Скриншот теста POST create Movie Event из Postman](<Screenshot 2025-11-02 at 21.08.10.png>)
 
 # Задание 3
 
@@ -206,6 +212,7 @@ cat .docker/config.json | base64
   kubectl -n cinemaabyss logs имя_пода (например - kafka-0)
   ```
 
+
   5. Разверните монолит:
   ```bash
   kubectl apply -f src/kubernetes/monolith.yaml
@@ -244,6 +251,7 @@ cat .docker/config.json | base64
 
   zookeeper-0                       1/1     Running 
 ```
+![alt text](<Screenshot 2025-11-12 at 18.17.45.png>)
 
   8. Добавим ingress
 
@@ -274,7 +282,11 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 Добавьте сюда скриншота вывода при вызове https://cinemaabyss.example.com/api/movies и  скриншот вывода event-service после вызова тестов.
+![alt text](<Screenshot 2025-11-12 at 18.50.27.png>)
 
+![alt text](<Screenshot 2025-11-14 at 16.09.12.png>)
+
+![alt text](<Screenshot 2025-11-14 at 16.09.27.png>)
 
 # Задание 4
 Для простоты дальнейшего обновления и развертывания вам как архитектуру необходимо так же реализовать helm-чарты для прокси-сервиса и проверить работу 
@@ -349,6 +361,12 @@ minikube tunnel
 Потом вызовите 
 https://cinemaabyss.example.com/api/movies
 и приложите скриншот развертывания helm и вывода https://cinemaabyss.example.com/api/movies
+
+![alt text](<Screenshot 2025-11-14 at 16.39.11.png>)
+
+![alt text](<Screenshot 2025-11-14 at 16.39.52.png>)
+
+![alt text](<Screenshot 2025-11-15 at 11.57.29.png>)
 
 ## Удаляем все
 

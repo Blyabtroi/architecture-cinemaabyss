@@ -5,7 +5,7 @@ global:
 
 # Image pull secrets
 imagePullSecrets:
-  dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6
+    - name: dockerconfigjson
 # Database configuration
 database:
   host: postgres
@@ -33,10 +33,17 @@ database:
 monolith:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/monolith
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/monolith
     tag: latest
     pullPolicy: Always
   replicas: 1
+  containerPort: 8080
+  servicePort: 8080
+  env:
+    - name: PORT
+      value: "8080"
+    - name: DB_CONNECTION_STRING
+      value: "postgres://postgres:cG9zdGdyZXNfcGFzc3dvcmQ=@postgres:5432/cinemaabyss?sslmode=disable"
   resources:
     limits:
       cpu: 500m
@@ -53,30 +60,27 @@ monolith:
 proxyService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/proxy-service
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/proxy-service
     tag: latest
     pullPolicy: Always
   replicas: 1
-  resources:
-    limits:
-      cpu: 300m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  service:
-    port: 80
-    targetPort: 8000
-    type: ClusterIP
-
-# Movies service configuration
-moviesService:
-  enabled: true
-  image:
-    repository: ghcr.io/db-exp/cinemaabysstest/movies-service
-    tag: latest
-    pullPolicy: Always
-  replicas: 1
+  containerPort: 8081
+  servicePort: 8081
+  env:
+    - name: PORT
+      value: "8081"
+    - name: MONOLITH_URL
+      value: "http://monolith:8080"
+    - name: MOVIES_SERVICE_URL
+      value: "http://movies-service:8081"
+    - name: EVENTS_SERVICE_URL
+      value: "http://events-service:8082"
+    - name: DB_CONNECTION_STRING
+      value: "postgres://postgres:cG9zdGdyZXNfcGFzc3dvcmQ=@postgres:5432/cinemaabyss?sslmode=disable"
+    - name: GRADUAL_MIGRATION
+      value: "true"
+    - name: MOVIES_MIGRATION_PERCENT
+      value: "100"
   resources:
     limits:
       cpu: 300m
@@ -89,14 +93,22 @@ moviesService:
     targetPort: 8081
     type: ClusterIP
 
-# Events service configuration
 eventsService:
   enabled: true
   image:
-    repository: ghcr.io/db-exp/cinemaabysstest/events-service
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/events-service
     tag: latest
     pullPolicy: Always
   replicas: 1
+  containerPort: 8082
+  servicePort: 8082
+  env:
+    - name: PORT
+      value: "8082"
+    - name: KAFKA_BROKERS
+      value: "kafka:9092"
+    - name: DB_CONNECTION_STRING
+      value: "postgres://postgres:cG9zdGdyZXNfcGFzc3dvcmQ=@postgres:5432/cinemaabyss?sslmode=disable"
   resources:
     limits:
       cpu: 300m
@@ -107,6 +119,33 @@ eventsService:
   service:
     port: 8082
     targetPort: 8082
+    type: ClusterIP
+
+# Movies service configuration
+moviesService:
+  enabled: true
+  image:
+    repository: ghcr.io/blyabtroi/architecture-cinemaabyss/movies-service
+    tag: latest
+    pullPolicy: Always
+  replicas: 1
+  containerPort: 8081
+  servicePort: 8081
+  env:
+    - name: PORT
+      value: "8081"
+    - name: DB_CONNECTION_STRING
+      value: "postgres://postgres:cG9zdGdyZXNfcGFzc3dvcmQ=@postgres:5432/cinemaabyss?sslmode=disable"
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 8081
+    targetPort: 8081
     type: ClusterIP
 
 # Kafka configuration
@@ -169,14 +208,30 @@ ingress:
   hosts:
     - host: cinemaabyss.example.com
       paths:
-        - path: /
+        - path: /api/users
           pathType: Prefix
-          service: proxy-service
-          port: 80
+          service: monolith
+          port: 8080
+        - path: /api/movies
+          pathType: Prefix
+          service: movies-service
+          port: 8081
         - path: /api/events
           pathType: Prefix
           service: events-service
           port: 8082
+        - path: /api/payments
+          pathType: Prefix
+          service: monolith
+          port: 8080
+        - path: /api/subscriptions
+          pathType: Prefix
+          service: monolith
+          port: 8080
+        - path: /health
+          pathType: Prefix
+          service: monolith
+          port: 8080
 
 # Application configuration
 config:

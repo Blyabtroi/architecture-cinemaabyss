@@ -1,0 +1,58 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(user, "Пользователь", "Использует CinemaAbyss API")
+Person(admin, "Администратор", "Мониторит события через Kafka UI")
+
+System_Boundary(s1, "CinemaAbyss") {
+  Container(proxy, "Proxy Service", "Go", "Маршрутизация запросов к микросервисам")
+  Container(movies, "Movies Microservice", "Go", "CRUD фильмов")
+  Container(users, "Users Microservice", "Go", "CRUD пользователей")
+  Container(payments, "Payments Microservice", "Go", "Обработка платежей")
+  Container(subscriptions, "Subscriptions Microservice", "Go", "Управление подписками")
+  Container(events, "Events Microservice", "Go", "Сбор и обработка событий")
+  Container(recommendations, "Recommendations Microservice", "Go", "Генерация рекомендаций")
+  ContainerDb(db, "PostgreSQL", "Реляционная БД", "Хранение основных данных")
+  Container(clickhouse, "ClickHouse", "БД", "Хранение аналитики и событий")
+  Container(kafka, "Kafka", "Kafka", "Брокер событий")
+  Container(zoo, "ZooKeeper", "ZooKeeper", "Координация Kafka-кластера")
+  Container(kafkaui, "Kafka UI", "Web UI", "Мониторинг событий и топиков Kafka")
+  Container(s3, "S3 Storage", "Объектное хранилище", "Хранение медиафайлов")
+  Container(cdn, "CDN", "Content Delivery Network", "Раздача видео контента")
+}
+
+System_Ext(ext_recsys, "Внешняя рекомендательная система", "Сторонний сервис для подборки фильмов")
+System_Ext(ext_payment, "Внешний платежный шлюз", "Обработка платежей")
+System_Ext(ext_auth, "Внешний сервис аутентификации", "OAuth, SSO")
+
+Rel(user, proxy, "Запросы через мобильные устройства, ноутбуки, Smart TV", "HTTP")
+Rel(admin, kafkaui, "Мониторинг", "HTTP")
+
+Rel(proxy, users, "Запросы /users", "HTTP")
+Rel(proxy, movies, "Запросы /movies", "HTTP")
+Rel(proxy, payments, "Запросы /payments", "HTTP")
+Rel(proxy, subscriptions, "Запросы /subscriptions", "HTTP")
+Rel(proxy, events, "Запросы /events", "HTTP")
+Rel(proxy, recommendations, "Запросы /recommendations", "HTTP")
+
+Rel(users, db, "SQL - запросы")
+Rel(movies, db, "SQL - запросы")
+Rel(payments, db, "SQL - запросы")
+Rel(subscriptions, db, "SQL - запросы")
+Rel(events, db, "SQL - запросы")
+Rel(events, clickhouse, "Запись событий")
+Rel(events, kafka, "Пишет/читает события")
+Rel(recommendations, clickhouse, "Чтение аналитики")
+Rel(recommendations, ext_recsys, "Получение рекомендаций", "HTTP")
+
+Rel(kafka, zoo, "Координация")
+Rel_U(kafkaui, kafka, "Мониторинг топиков", "Kafka API")
+Rel_U(kafkaui, zoo, "Статус брокеров", "ZooKeeper API")
+
+Rel(movies, s3, "Хранение/загрузка медиа", "S3 API")
+Rel(movies, cdn, "Раздача видео", "HTTP")
+
+Rel(payments, ext_payment, "Обработка платежей", "HTTP")
+Rel(users, ext_auth, "Аутентификация", "OAuth")
+
+@enduml
